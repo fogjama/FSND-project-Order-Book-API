@@ -20,7 +20,7 @@ class Orders(db.Model):
     __tablename__ = 'orders'
 
     id = Column(Integer, primary_key=True)
-    customer = Column(String)
+    customer = Column(Integer)
     value = Column(Float)
     date = Column(DateTime)
 
