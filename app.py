@@ -8,6 +8,67 @@ def create_app(test_config=None):
   app = Flask(__name__)
   CORS(app)
 
+  @app.route('/customers', methods=['POST'])
+  def create_customer():
+    customer = request.get_json()
+
+    try:
+      new_customer = Customer(
+        name=customer['name']
+      )
+      new_customer.insert()
+
+      return jsonify({
+        'success': True,
+        'customer': new_customer.format()
+      })
+
+    except Exception as e:
+      abort(422)
+  
+  @app.route('/orders', methods=['POST'])
+  def create_order():
+    order = request.get_json()
+
+    try:
+      new_order = Order(
+        customer=order['customer'],
+        value=order['value'],
+        date=order['date']
+      )
+      new_order.insert()
+
+      return jsonify({
+        'success': True,
+        'order': new_order.format()
+      })
+    
+    except Exception as e:
+      abort(422)
+  
+  @app.route('/deliveries', methods=['POST'])
+  def create_delivery():
+    delivery = request.get_json()
+
+    try:
+      new_delivery = Delivery(
+        order=delivery['order'],
+        delivery_date=['delivery_date']
+      )
+      new_delivery.insert()
+
+      return jsonify({
+        'success': True,
+        'delivery': new_delivery.format()
+      })
+    
+    except Exception as e:
+      abort(422)
+
+  @app.route('/customers/<customer_id>', methods=['PATCH'])
+  def update_customer(customer_id):
+    
+
   return app
 
 APP = create_app()
