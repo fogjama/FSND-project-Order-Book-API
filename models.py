@@ -1,5 +1,5 @@
 import os
-from sqlalchemy import Column, DateTime, Float, String, Integer, create_engine
+from sqlalchemy import Column, Boolean, DateTime, Float, String, Integer, create_engine
 from flask_sqlalchemy import SQLAlchemy
 import datetime
 
@@ -84,6 +84,7 @@ class Customer(db.Model):
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
+    active = Column(Boolean)
 
     def __init__(self, name):
         self.name = name
