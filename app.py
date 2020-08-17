@@ -156,6 +156,10 @@ def create_app(test_config=None):
 
   # Customer cannot be DELETEd; PATCH 'active' to False
 
+  '''
+  @TODO: Define GET endpoints
+  '''
+
   # Error handlers
 
   @app.errorhandler(404)
