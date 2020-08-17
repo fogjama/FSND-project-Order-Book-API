@@ -16,7 +16,7 @@ def setup_db(app, database_path=database_path):
     db.create_all()
 
 
-class Orders(db.Model):
+class Order(db.Model):
     __tablename__ = 'orders'
 
     id = Column(Integer, primary_key=True)
@@ -49,7 +49,7 @@ class Orders(db.Model):
         db.session.commit()
 
 
-class Deliveries(db.Model):
+class Delivery(db.Model):
     __tablename__ = 'deliveries'
 
     id = Column(Integer, primary_key=True)
@@ -79,7 +79,7 @@ class Deliveries(db.Model):
         db.session.commit()
 
 
-class Customers(db.Model):
+class Customer(db.Model):
     __tablename__ = 'customers'
 
     id = Column(Integer, primary_key=True)
