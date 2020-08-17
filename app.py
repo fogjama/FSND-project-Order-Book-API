@@ -3,11 +3,16 @@ from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
+from models import Order, Customer, Delivery, setup_db
+
 def create_app(test_config=None):
   # create and configure the app
   app = Flask(__name__)
+  setup_db(app)
+
   CORS(app)
 
+  # POST endpoints
   @app.route('/customers', methods=['POST'])
   def create_customer():
     customer = request.get_json()
@@ -23,7 +28,7 @@ def create_app(test_config=None):
         'customer': new_customer.format()
       })
 
-    except Exception as e:
+    except:
       abort(422)
   
   @app.route('/orders', methods=['POST'])
@@ -43,7 +48,7 @@ def create_app(test_config=None):
         'order': new_order.format()
       })
     
-    except Exception as e:
+    except:
       abort(422)
   
   @app.route('/deliveries', methods=['POST'])
@@ -62,9 +67,10 @@ def create_app(test_config=None):
         'delivery': new_delivery.format()
       })
     
-    except Exception as e:
+    except:
       abort(422)
 
+  # PATCH endpoints 
   @app.route('/customers/<customer_id>', methods=['PATCH'])
   def update_customer(customer_id):
     customer = request.get_json()
@@ -79,12 +85,16 @@ def create_app(test_config=None):
         customer_db.name = customer['name']
         customer_db.update()
       
+      if 'active' in customer:
+        customer_db.active = customer['active']
+        customer_db.update()
+      
       return jsonify({
         'success': True,
         'customer': customer_db.format()
       })
     
-    except BaseException as e:
+    except:
       abort(422)
   
   @app.route('/orders/<order_id>', methods=['PATCH'])
@@ -110,12 +120,72 @@ def create_app(test_config=None):
         'order': order_db.format()
       })
     
-    except BaseException as e:
+    except:
       abort(422)
   
+  # Delivery cannot be PATCHed
+  
+  # DELETE endpoints
+  @app.route('/orders/<order_id>', methods=['DELETE'])
+  def delete_order(order_id):
 
+    try:
+      order = Order.query.filter(Order.id==int(order_id)).one_or_none()
+
+      if order is None:
+        abort(404)
+      
+      order.delete()
+    
+    except:
+      abort(422)
+  
+  @app.route('/deliveries/<delivery_id>', methods=['DELETE'])
+  def delete_delivery(delivery_id):
+
+    try:
+      delivery = Delivery.query.filter(Delivery.id==int(delivery_id)).one_or_none()
+
+      if delivery is None:
+        abort(404)
+      
+      delivery.delete()
+
+    except:
+      abort(422)
+
+  # Customer cannot be DELETEd; PATCH 'active' to False
+
+  # Error handlers
+
+  @app.errorhandler(404)
+  def not_found(error):
+    return jsonify({
+      'success': False,
+      'error': 404,
+      'message': 'Resource not found'
+    }), 404
+
+  @app.errorhandler(405)
+  def method_not_allowed(error):
+    return jsonify({
+      'success': False,
+      'error': 405,
+      'message': 'Method not allowed'
+    }), 405
+  
+  @app.errorhandler(422)
+  def unprocessable(error):
+    return jsonify({
+      'success': False,
+      'error': 422,
+      'message': 'Unprocessable'
+    }), 422
+  
+  # TODO: Implement error handler for AuthErrors
 
   return app
+
 
 APP = create_app()
 
