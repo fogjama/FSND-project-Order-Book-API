@@ -92,6 +92,12 @@ class OrdersTestCase(unittest.TestCase):
     def test_404_get_delivery_by_nonexistant_id(self):
         pass
 
+    def test_get_orders_by_customer(self):
+        pass
+
+    def test_get_deliveries_by_order(self):
+        pass
+
     # Test Patch
 
     def test_update_customer(self):
