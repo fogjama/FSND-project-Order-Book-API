@@ -106,16 +106,13 @@ class OrdersTestCase(unittest.TestCase):
     def test_update_order(self):
         pass
 
-    def test_update_delivery(self):
-        pass
-
     def test_404_update_customer(self):
         pass
 
     def test_404_update_order(self):
         pass
 
-    def test_404_update_delivery(self):
+    def test_405_update_delivery(self):
         pass
 
     # Test Delete
