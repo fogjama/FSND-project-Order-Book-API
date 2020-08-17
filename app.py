@@ -67,7 +67,53 @@ def create_app(test_config=None):
 
   @app.route('/customers/<customer_id>', methods=['PATCH'])
   def update_customer(customer_id):
+    customer = request.get_json()
+
+    try:
+      customer_db = Customer.query.filter(Customer.id==int(customer_id)).one_or_none()
+
+      if customer_db is None:
+        abort(404)
+      
+      if 'name' in customer:
+        customer_db.name = customer['name']
+        customer_db.update()
+      
+      return jsonify({
+        'success': True,
+        'customer': customer_db.format()
+      })
     
+    except BaseException as e:
+      abort(422)
+  
+  @app.route('/orders/<order_id>', methods=['PATCH'])
+  def update_order(order_id):
+    order = request.get_json()
+
+    try:
+      order_db = Order.query.filter(Order.id==int(order_id)).one_or_none()
+
+      if order_db is None:
+        abort(404)
+      
+      if 'customer' in order:
+        order_db.customer = order['customer']
+        order_db.update()
+      
+      if 'value' in order:
+        order_db.value = order['value']
+        order_db.update()
+      
+      return jsonify({
+        'success': True,
+        'order': order_db.format()
+      })
+    
+    except BaseException as e:
+      abort(422)
+  
+
 
   return app
 
