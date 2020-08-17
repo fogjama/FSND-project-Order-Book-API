@@ -43,6 +43,8 @@ class OrdersTestCase(unittest.TestCase):
     def tearDown(self):
         pass
 
+    # Test Post
+
     def test_create_customer(self):
         pass
 
@@ -51,6 +53,17 @@ class OrdersTestCase(unittest.TestCase):
 
     def test_create_delivery(self):
         pass
+
+    def test_create_order_error(self):
+        pass
+
+    def test_create_customer_error(self):
+        pass
+
+    def test_create_delivery_error(self):
+        pass
+
+    # Test Get
 
     def test_get_paginated_orders(self):
         pass
@@ -79,14 +92,27 @@ class OrdersTestCase(unittest.TestCase):
     def test_404_get_delivery_by_nonexistant_id(self):
         pass
 
-    '''
-    @TODO:
-    add tests for 
-    - post errors
-    - patch success
-    - patch errors
-    - delete errors
-    '''
+    # Test Patch
+
+    def test_update_customer(self):
+        pass
+
+    def test_update_order(self):
+        pass
+
+    def test_update_delivery(self):
+        pass
+
+    def test_404_update_customer(self):
+        pass
+
+    def test_404_update_order(self):
+        pass
+
+    def test_404_update_delivery(self):
+        pass
+
+    # Test Delete
 
     def test_delete_order(self):
         pass
@@ -96,6 +122,16 @@ class OrdersTestCase(unittest.TestCase):
 
     def test_delete_customer(self):
         pass
+
+    def test_404_delete_order(self):
+        pass
+
+    def test_404_delete_customer(self):
+        pass
+
+    def test_404_delete_delivery(self):
+        pass
+
 
 if __name__ == '__main__':
     unittest.main()
