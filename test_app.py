@@ -2,9 +2,10 @@ import os
 import unittest
 from flask_sqlalchemy import SQLAlchemy
 import datetime
+import json
 
 from app import create_app
-from models import setup_db, Orders, Deliveries, Customers
+from models import setup_db, Order, Delivery, Customer
 
 
 class OrdersTestCase(unittest.TestCase):
@@ -46,22 +47,46 @@ class OrdersTestCase(unittest.TestCase):
     # Test Post
 
     def test_create_customer(self):
-        pass
+        res = self.client().post('/customers', json=self.new_customer)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
 
     def test_create_order(self):
-        pass
+        res = self.client().post('/orders', json=self.new_order)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
 
     def test_create_delivery(self):
-        pass
+        res = self.client().post('/deliveries', json=self.new_delivery)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['succes'], True)
 
     def test_create_order_error(self):
-        pass
+        res = self.client().post('/orders', json={'customer': False})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(data['success'], False)
 
     def test_create_customer_error(self):
-        pass
+        res = self.client().post('/customers', json={'name': False})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(data['success'], False)
 
     def test_create_delivery_error(self):
-        pass
+        res = self.client().post('/deliveries', json={'order': 'wombat'})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(data['success'], False)
 
     # Test Get
 
@@ -74,7 +99,7 @@ class OrdersTestCase(unittest.TestCase):
     def test_404_get_order_by_nonexistant_id(self):
         pass
 
-    def test_get_customers(self):
+    def test_get_paginated_customers(self):
         pass
 
     def test_get_customer_by_id(self):
@@ -123,16 +148,13 @@ class OrdersTestCase(unittest.TestCase):
     def test_delete_delivery(self):
         pass
 
-    def test_delete_customer(self):
-        pass
-
     def test_404_delete_order(self):
         pass
 
     def test_404_delete_customer(self):
         pass
 
-    def test_404_delete_delivery(self):
+    def test_405_delete_customer(self):
         pass
 
 
