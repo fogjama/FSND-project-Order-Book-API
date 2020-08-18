@@ -32,3 +32,38 @@ python manage.py db upgrade
 #### Install Dependencies
 
 #### Database Setup
+
+
+## API Documentation
+
+### Endpoints
+
+#### GET '/customers?page={page}
+
+#### GET '/orders?page={page}
+
+#### GET '/deliveries?page={page}
+
+#### GET '/customers/{customer_id}
+
+#### GET '/orders/{order_id}
+
+#### GET '/deliveries/{delivery_id}
+
+#### GET '/customers/{customer_id}/orders'
+
+#### GET '/orders/{order_id}/deliveries'
+
+#### POST '/customers'
+
+#### POST '/orders'
+
+#### POST '/deliveries'
+
+#### PATCH '/customers/{customer_id}
+
+#### PATCH '/orders/{order_id}
+
+#### DELETE '/orders/{order_id}
+
+#### DELETE '/deliveries/{delivery_id}
