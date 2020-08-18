@@ -170,8 +170,105 @@ def create_app(test_config=None):
   # Customer cannot be DELETEd; PATCH 'active' to False
 
   @app.route('/orders', methods=['GET'])
-  def get_order():
+  def get_order_list():
+    selection = Order.query.order_by(Order.id).all()
+    orders = paginate_results(request, selection)
 
+    total_orders = len(selection)
+
+    return jsonify({
+      'success': True,
+      'orders': orders,
+      'total_orders': total_orders
+    })
+
+  @app.route('/orders/<order_id>', methods=['GET'])
+  def get_order(order_id):
+    order = Order.query.filter(Order.id=order_id).one_or_none()
+
+    if order is None:
+      abort(404)
+    
+    return jsonify({
+      'success': True,
+      'order': order.format()
+    })
+
+    @app.route('/customers', methods=['GET'])
+    def get_customer_list():
+      selection = Customer.query.order_by(Customer.name).all()
+      customers = paginate_results(request, selection)
+
+      total_customers = len(selection)
+
+      return jsonify({
+        'success': True,
+        'customers': customers,
+        'total_customers': total_customers
+      })
+    
+    @app.route('/customers/<customer_id>', methods=['GET'])
+    def get_customer(customer_id):
+      customer = Customer.query.filter(Customer.id=customer_id).one_or_none()
+
+      if customer is None:
+        abort(404)
+      
+      return jsonify({
+        'success': True,
+        'customer': customer.format()
+      })
+    
+    @app.route('/deliveries', methods=['GET'])
+    def get_delivery_list():
+      selection = Delivery.query.order_by(Delivery.id).all()
+      deliveries = paginate_results(request, selection)
+
+      total_deliveries = len(selection)
+
+      return jsonify({
+        'success': True,
+        'deliveries': deliveries,
+        'total_deliveries': total_deliveries
+      })
+    
+    @app.route('/deliveries/<delivery_id>', methods=['GET'])
+    def get_delivery(delivery_id):
+      delivery = Delivery.query.filter(Delivery.id=delivery_id).one_or_none()
+
+      if delivery is None:
+        abort(404)
+      
+      return jsonify({
+        'success': True,
+        'delivery': delivery.format()
+      })
+    
+    @app.route('/customers/<customer_id>/orders', methods=['GET'])
+    def get_orders_by_customer(customer_id):
+      selection = Order.query.filter(Order.customer=customer_id).all()
+      orders = paginate_results(request, selection)
+
+      total_orders = len(selection)
+
+      return jsonify({
+        'success': True,
+        'orders': orders,
+        'total_orders': total_orders
+      })
+    
+    @app.route('/orders/<order_id>/deliveries', methods=['GET'])
+    def get_deliveries_by_customer(order_id):
+      selection = Delivery.query.filter(Delivery.order=order_id).all()
+      deliveries = paginate_results(request, selection)
+
+      total_deliveries = len(selection)
+
+      return jsonify({
+        'success': True,
+        'deliveries': deliveries,
+        'total_deliveries': total_deliveries
+      })
 
   # Error handlers
 
