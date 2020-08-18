@@ -184,7 +184,7 @@ def create_app(test_config=None):
 
   @app.route('/orders/<order_id>', methods=['GET'])
   def get_order(order_id):
-    order = Order.query.filter(Order.id=order_id).one_or_none()
+    order = Order.query.filter_by(id=order_id).one_or_none()
 
     if order is None:
       abort(404)
@@ -209,7 +209,7 @@ def create_app(test_config=None):
     
     @app.route('/customers/<customer_id>', methods=['GET'])
     def get_customer(customer_id):
-      customer = Customer.query.filter(Customer.id=customer_id).one_or_none()
+      customer = Customer.query.filter_by(id=customer_id).one_or_none()
 
       if customer is None:
         abort(404)
@@ -234,7 +234,7 @@ def create_app(test_config=None):
     
     @app.route('/deliveries/<delivery_id>', methods=['GET'])
     def get_delivery(delivery_id):
-      delivery = Delivery.query.filter(Delivery.id=delivery_id).one_or_none()
+      delivery = Delivery.query.filter_by(id=delivery_id).one_or_none()
 
       if delivery is None:
         abort(404)
@@ -246,7 +246,7 @@ def create_app(test_config=None):
     
     @app.route('/customers/<customer_id>/orders', methods=['GET'])
     def get_orders_by_customer(customer_id):
-      selection = Order.query.filter(Order.customer=customer_id).all()
+      selection = Order.query.filter_by(customer=customer_id).all()
       orders = paginate_results(request, selection)
 
       total_orders = len(selection)
@@ -259,7 +259,7 @@ def create_app(test_config=None):
     
     @app.route('/orders/<order_id>/deliveries', methods=['GET'])
     def get_deliveries_by_customer(order_id):
-      selection = Delivery.query.filter(Delivery.order=order_id).all()
+      selection = Delivery.query.filter_by(order=order_id).all()
       deliveries = paginate_results(request, selection)
 
       total_deliveries = len(selection)
