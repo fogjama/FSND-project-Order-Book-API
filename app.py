@@ -5,6 +5,19 @@ from flask_cors import CORS
 
 from models import Order, Customer, Delivery, setup_db
 
+ITEMS_PER_PAGE = 10
+
+def paginate_results(request, selection):
+  page = request.args.get('page', 1, type=int)
+  start = (page - 1) * ITEMS_PER_PAGE
+  end = start + ITEMS_PER_PAGE
+
+  items = [item.format() for item in selection]
+  paginated_items = items[start:end]
+
+  return paginated_items
+
+
 def create_app(test_config=None):
   # create and configure the app
   app = Flask(__name__)
@@ -156,9 +169,9 @@ def create_app(test_config=None):
 
   # Customer cannot be DELETEd; PATCH 'active' to False
 
-  '''
-  @TODO: Define GET endpoints
-  '''
+  @app.route('/orders', methods=['GET'])
+  def get_order():
+
 
   # Error handlers
 
