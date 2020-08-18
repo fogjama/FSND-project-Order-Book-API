@@ -91,37 +91,115 @@ class OrdersTestCase(unittest.TestCase):
     # Test Get
 
     def test_get_paginated_orders(self):
-        pass
+        res = self.client().get('/orders')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['orders'])
+        self.assertTrue(data['total_orders'])
 
     def test_get_order_by_id(self):
-        pass
+        res = self.client().get('/orders/1')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['order']['id'])
+        self.assertTrue(data['order']['value'])
+        self.assertTrue(data['order']['date'])
+        self.assertTrue(data['order']['customer'])
 
     def test_404_get_order_by_nonexistant_id(self):
-        pass
+        res = self.client().get('orders/100000')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
 
     def test_get_paginated_customers(self):
-        pass
+        res = self.client().get('/customers')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['customers'])
+        self.assertTrue(data['total_customers'])
 
     def test_get_customer_by_id(self):
-        pass
+        res = self.client().get('/customers/1')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['customer']['id'])
+        self.assertTrue(data['customer']['name'])
+        self.assertTrue(data['customer']['active'])
 
     def test_404_get_customer_by_nonexistant_id(self):
-        pass
+        res = self.client().get('/customers/1000000')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
 
     def test_get_paginated_deliveries(self):
-        pass
+        res = self.client().get('/deliveries')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['deliveries'])
+        self.assertTrue(data['total_deliveries'])
 
     def test_get_delivery_by_id(self):
-        pass
+        res = self.client().get('/deliveries/1')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['delivery']['id'])
+        self.assertTrue(data['delivery']['order'])
+        self.assertTrue(data['delivery']['delivery_date'])
 
     def test_404_get_delivery_by_nonexistant_id(self):
-        pass
+        res = self.client().get('/deliveries/1000000')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
 
     def test_get_orders_by_customer(self):
-        pass
+        res = self.client().get('/customers/1/orders')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['orders'])
+        self.assertTrue(data['total_orders'])
+
+    def test_404_get_orders_by_nonexistant_customer(self):
+        res = self.client().get('/customers/1000000/orders')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
 
     def test_get_deliveries_by_order(self):
-        pass
+        res = self.client().get('/orders/1/deliveries')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['deliveries'])
+        self.assertTrue(data['total_deliveries'])
+
+    def test_404_get_deliveries_by_nonexistant_order(self):
+        res = self.client().get('/orders/1000000/deliveries')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
 
     # Test Patch
 
