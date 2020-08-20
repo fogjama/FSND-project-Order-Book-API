@@ -243,19 +243,41 @@ class OrdersTestCase(unittest.TestCase):
     # Test Delete
 
     def test_delete_order(self):
-        pass
+        res = self.client().delete('/orders/1')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['deleted'])
 
     def test_delete_delivery(self):
-        pass
+        res = self.client().delete('/deliveries/1')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['deleted'])
 
     def test_404_delete_order(self):
-        pass
+        res = self.client().delete('/orders/100000000')
+        data = json.loads(res.data)
 
-    def test_404_delete_customer(self):
-        pass
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+
+    def test_404_delete_delivery(self):
+        res = self.client().delete('/deliveries/100000000')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
 
     def test_405_delete_customer(self):
-        pass
+        res = self.client().delete('/customers/1000000000')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 405)
+        self.assertEqual(data['success'], False)
 
 
 if __name__ == '__main__':
