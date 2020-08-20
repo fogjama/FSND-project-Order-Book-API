@@ -26,6 +26,12 @@ python manage.py db migrate
 python manage.py db upgrade
 ```
 
+#### Environment Variables
+
+The following environment variables must be set:
+* DATABASE_URL : full path to SQL database. Example: `postgres://{user}:{password}@{path}/{database_name}`
+* AUTH0_DOMAIN : domain for Auth0 account. Example: `{user}.eu.auth0.com`
+* API_AUDIENCE : value from Auth0 API definition
 
 ### Deploy to Heroku
 
