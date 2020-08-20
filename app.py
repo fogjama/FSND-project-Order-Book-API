@@ -4,8 +4,11 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
 from models import Order, Customer, Delivery, setup_db
+from .auth.auth import AuthError, requires_auth
+
 
 ITEMS_PER_PAGE = 10
+
 
 def paginate_results(request, selection):
   page = request.args.get('page', 1, type=int)
@@ -27,6 +30,7 @@ def create_app(test_config=None):
 
   # POST endpoints
   @app.route('/customers', methods=['POST'])
+  @requires_auth('post:customers')
   def create_customer():
     customer = request.get_json()
 
@@ -45,6 +49,7 @@ def create_app(test_config=None):
       abort(422)
   
   @app.route('/orders', methods=['POST'])
+  @requires_auth('post:orders')
   def create_order():
     order = request.get_json()
 
@@ -65,6 +70,7 @@ def create_app(test_config=None):
       abort(422)
   
   @app.route('/deliveries', methods=['POST'])
+  @requires_auth('post:deliveries')
   def create_delivery():
     delivery = request.get_json()
 
@@ -85,6 +91,7 @@ def create_app(test_config=None):
 
   # PATCH endpoints 
   @app.route('/customers/<customer_id>', methods=['PATCH'])
+  @requires_auth('patch:customers')
   def update_customer(customer_id):
     customer = request.get_json()
 
@@ -111,6 +118,7 @@ def create_app(test_config=None):
       abort(422)
   
   @app.route('/orders/<order_id>', methods=['PATCH'])
+  @requires_auth('patch:orders')
   def update_order(order_id):
     order = request.get_json()
 
@@ -140,6 +148,7 @@ def create_app(test_config=None):
   
   # DELETE endpoints
   @app.route('/orders/<order_id>', methods=['DELETE'])
+  @requires_auth('delete:orders')
   def delete_order(order_id):
 
     try:
@@ -149,11 +158,17 @@ def create_app(test_config=None):
         abort(404)
       
       order.delete()
+
+      return jsonify({
+        'success': True,
+        'deleted': order_id
+      })
     
     except:
       abort(422)
   
   @app.route('/deliveries/<delivery_id>', methods=['DELETE'])
+  @requires_auth('delete:deliveries')
   def delete_delivery(delivery_id):
 
     try:
@@ -164,12 +179,18 @@ def create_app(test_config=None):
       
       delivery.delete()
 
+      return jsonify({
+        'success': True,
+        'deleted': delivery_id
+      })
+
     except:
       abort(422)
 
   # Customer cannot be DELETEd; PATCH 'active' to False
 
   @app.route('/orders', methods=['GET'])
+  @requires_auth('get:orders')
   def get_order_list():
     selection = Order.query.order_by(Order.id).all()
     orders = paginate_results(request, selection)
@@ -183,6 +204,7 @@ def create_app(test_config=None):
     })
 
   @app.route('/orders/<order_id>', methods=['GET'])
+  @requires_auth('get:orders')
   def get_order(order_id):
     order = Order.query.filter_by(id=order_id).one_or_none()
 
@@ -195,6 +217,7 @@ def create_app(test_config=None):
     })
 
     @app.route('/customers', methods=['GET'])
+    @requires_auth('get:customers')
     def get_customer_list():
       selection = Customer.query.order_by(Customer.name).all()
       customers = paginate_results(request, selection)
@@ -208,6 +231,7 @@ def create_app(test_config=None):
       })
     
     @app.route('/customers/<customer_id>', methods=['GET'])
+    @requires_auth('get:customers')
     def get_customer(customer_id):
       customer = Customer.query.filter_by(id=customer_id).one_or_none()
 
@@ -220,6 +244,7 @@ def create_app(test_config=None):
       })
     
     @app.route('/deliveries', methods=['GET'])
+    @requires_auth('get:deliveries')
     def get_delivery_list():
       selection = Delivery.query.order_by(Delivery.id).all()
       deliveries = paginate_results(request, selection)
@@ -233,6 +258,7 @@ def create_app(test_config=None):
       })
     
     @app.route('/deliveries/<delivery_id>', methods=['GET'])
+    @requires_auth('get:deliveries')
     def get_delivery(delivery_id):
       delivery = Delivery.query.filter_by(id=delivery_id).one_or_none()
 
@@ -245,6 +271,7 @@ def create_app(test_config=None):
       })
     
     @app.route('/customers/<customer_id>/orders', methods=['GET'])
+    @requires_auth('get:orders')
     def get_orders_by_customer(customer_id):
       selection = Order.query.filter_by(customer=customer_id).all()
       orders = paginate_results(request, selection)
@@ -258,6 +285,7 @@ def create_app(test_config=None):
       })
     
     @app.route('/orders/<order_id>/deliveries', methods=['GET'])
+    @requires_auth('get:deliveries')
     def get_deliveries_by_customer(order_id):
       selection = Delivery.query.filter_by(order=order_id).all()
       deliveries = paginate_results(request, selection)
