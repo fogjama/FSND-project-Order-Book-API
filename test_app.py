@@ -204,19 +204,41 @@ class OrdersTestCase(unittest.TestCase):
     # Test Patch
 
     def test_update_customer(self):
-        pass
+        res = self.client().patch('/customers/1', json={'name': 'Walla Wanga'})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['customer'])
 
     def test_update_order(self):
-        pass
+        res = self.client().patch('/orders/1', json={'value', 99.99})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['order'])
 
     def test_404_update_customer(self):
-        pass
+        res = self.client().patch('/customers/10000000', json={'name': 'Jodie Foster'})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
 
     def test_404_update_order(self):
-        pass
+        res = self.client().patch('/orders/10000000', json={'value': 99.99})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
 
     def test_405_update_delivery(self):
-        pass
+        res = self.client().patch('/deliveries/1', json={'order': 1})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 405)
+        self.assertEqual(data['success'], False)
 
     # Test Delete
 
