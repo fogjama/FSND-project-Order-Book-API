@@ -1,5 +1,5 @@
 import os
-from sqlalchemy import Column, Boolean, DateTime, Float, String, Integer, create_engine
+from sqlalchemy import Column, Boolean, DateTime, Float, String, Integer, create_engine, ForeignKey
 from flask_sqlalchemy import SQLAlchemy
 import datetime
 
@@ -20,7 +20,7 @@ class Order(db.Model):
     __tablename__ = 'orders'
 
     id = Column(Integer, primary_key=True)
-    customer = Column(Integer)
+    customer = Column(Integer, ForeignKey('Customer.id'))
     value = Column(Float)
     date = Column(DateTime)
 
@@ -53,7 +53,7 @@ class Delivery(db.Model):
     __tablename__ = 'deliveries'
 
     id = Column(Integer, primary_key=True)
-    order = Column(Integer)
+    order = Column(Integer, ForeignKey('Order.id'))
     delivery_date = Column(DateTime)
 
     def __init__(self, order, delivery_date):
