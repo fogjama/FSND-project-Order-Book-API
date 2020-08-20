@@ -54,16 +54,16 @@ def get_token_auth_header():
 def check_permissions(permission, payload):
     if 'permissions' not in payload:
         raise AuthError({
-        'code': 'missing_permission',
-        'description': 'Malformed header - missing permissions'
-    }, 400)
-    
+            'code': 'missing_permission',
+            'description': 'Malformed header - missing permissions'
+        }, 400)
+
     if permission not in payload['permissions']:
         raise AuthError({
-        'code': 'missing_permission',
-        'description': 'Missing permission ' + permission
-    }, 401)
-    
+            'code': 'missing_permission',
+            'description': 'Missing permission ' + permission
+        }, 401)
+
     return True
 
 
@@ -108,18 +108,19 @@ def verify_decode_jwt(token):
         except jwt.JWTClaimsError:
             raise AuthError({
                 'code': 'invalid_claims',
-                'description': 'Incorrect claims. Please, check the audience and issuer.'
+                'description': 'Incorrect claims. \
+                    Please, check the audience and issuer.'
             }, 401)
         except Exception:
             raise AuthError({
                 'code': 'invalid_header',
                 'description': 'Unable to parse authentication token.'
             }, 400)
-    
+
     raise AuthError({
-                'code': 'invalid_header',
+        'code': 'invalid_header',
                 'description': 'Unable to find the appropriate key.'
-            }, 400)
+    }, 400)
 
 
 def requires_auth(permission=''):
@@ -129,11 +130,11 @@ def requires_auth(permission=''):
             token = get_token_auth_header()
             try:
                 payload = verify_decode_jwt(token)
-            except:
+            except BaseException:
                 raise AuthError({
-                'code': 'unauthorized',
-                'description': 'Not authorized'
-            }, 401)
+                    'code': 'unauthorized',
+                    'description': 'Not authorized'
+                }, 401)
 
             check_permissions(permission, payload)
             return f(payload, *args, **kwargs)

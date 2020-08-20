@@ -1,5 +1,6 @@
 import os
-from sqlalchemy import Column, Boolean, DateTime, Float, String, Integer, create_engine, ForeignKey
+from sqlalchemy import Column, Boolean, DateTime, \
+    Float, String, Integer, create_engine, ForeignKey
 from flask_sqlalchemy import SQLAlchemy
 import datetime
 
@@ -28,7 +29,7 @@ class Order(db.Model):
         self.customer = customer
         self.value = value
         self.date = date
-    
+
     def format(self):
         return {
             'id': self.id,
@@ -40,10 +41,10 @@ class Order(db.Model):
     def insert(self):
         db.session.add(self)
         db.session.commit()
-    
+
     def update(self):
         db.session.commit()
-    
+
     def delete(self):
         db.session.delete(self)
         db.session.commit()
@@ -59,21 +60,21 @@ class Delivery(db.Model):
     def __init__(self, order, delivery_date):
         self.order = order,
         self.delivery_date = delivery_date
-    
+
     def format(self):
         return {
             'id': self.id,
             'order': self.order,
             'delivery_date': self.delivery_date
         }
-    
+
     def insert(self):
         db.session.add(self)
         db.session.commit()
-    
+
     def update(self):
         db.session.commit()
-    
+
     def delete(self):
         db.session.delete(self)
         db.session.commit()
@@ -88,7 +89,7 @@ class Customer(db.Model):
 
     def __init__(self, name):
         self.name = name
-    
+
     def format(self):
         return {
             'id': self.id,
@@ -98,10 +99,10 @@ class Customer(db.Model):
     def insert(self):
         db.session.add(self)
         db.session.commit()
-    
+
     def update(self):
         db.session.commit()
-    
+
     def delete(self):
         db.session.delete(self)
         db.session.commit()
