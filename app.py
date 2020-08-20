@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
 from models import Order, Customer, Delivery, setup_db
-from .auth.auth import AuthError, requires_auth
+from auth.auth import AuthError, requires_auth
 
 
 ITEMS_PER_PAGE = 10
@@ -329,7 +329,7 @@ def create_app(test_config=None):
   return app
 
 
-APP = create_app()
+app = create_app()
 
 if __name__ == '__main__':
-    APP.run(host='0.0.0.0', port=8080, debug=True)
+    app.run(host='0.0.0.0', port=8080, debug=True)
