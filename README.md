@@ -46,6 +46,19 @@ The following environment variables must be set:
 
 #### GET '/customers?page={page}
 
+- Fetches a paginated list of customers with 10 items per page. 
+- Request arguments: Optional page argument of type integer (default to 1 if absent)
+- Returns 
+
+Example:
+```
+curl -X GET http://localhost:5000/customers?page=2
+```
+Response:
+```
+
+```
+
 #### GET '/orders?page={page}
 
 #### GET '/deliveries?page={page}
