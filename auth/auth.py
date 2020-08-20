@@ -1,4 +1,9 @@
 import os
+from flask import request, _request_ctx_stack
+from functools import wraps
+from jose import jwt
+from urllib.request import urlopen
+
 
 auth0_domain = os.environ['AUTH0_DOMAIN']
 api_audience = os.environ['API_AUDIENCE']
