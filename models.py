@@ -17,13 +17,41 @@ def setup_db(app, database_path=database_path):
     db.create_all()
 
 
+class Customer(db.Model):
+    __tablename__ = 'customers'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    active = Column(Boolean, default=True)
+
+    def __init__(self, name):
+        self.name = name
+
+    def format(self):
+        return {
+            'id': self.id,
+            'name': self.name
+        }
+
+    def insert(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def update(self):
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+
 class Order(db.Model):
     __tablename__ = 'orders'
 
     id = Column(Integer, primary_key=True)
-    customer = Column(Integer, ForeignKey('Customer.id'))
+    customer = Column(Integer)
     value = Column(Float)
-    date = Column(DateTime)
+    date = Column(DateTime, default=datetime.datetime.now())
 
     def __init__(self, customer, value, date=datetime.datetime.now()):
         self.customer = customer
@@ -54,7 +82,7 @@ class Delivery(db.Model):
     __tablename__ = 'deliveries'
 
     id = Column(Integer, primary_key=True)
-    order = Column(Integer, ForeignKey('Order.id'))
+    order = Column(Integer)
     delivery_date = Column(DateTime)
 
     def __init__(self, order, delivery_date):
@@ -79,30 +107,3 @@ class Delivery(db.Model):
         db.session.delete(self)
         db.session.commit()
 
-
-class Customer(db.Model):
-    __tablename__ = 'customers'
-
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
-    active = Column(Boolean)
-
-    def __init__(self, name):
-        self.name = name
-
-    def format(self):
-        return {
-            'id': self.id,
-            'name': self.name
-        }
-
-    def insert(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def update(self):
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
