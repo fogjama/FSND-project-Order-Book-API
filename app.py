@@ -6,7 +6,7 @@ from werkzeug.exceptions import HTTPException
 import sys
 
 from models import Order, Customer, Delivery, setup_db
-# from auth.auth import AuthError, requires_auth
+from auth.auth import AuthError, requires_auth
 
 
 ITEMS_PER_PAGE = 10
