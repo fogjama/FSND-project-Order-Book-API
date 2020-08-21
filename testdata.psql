@@ -1,0 +1,19 @@
+COPY customers (name, active) FROM stdin;
+Janet Downey	True
+Ella Forcraft	True
+John Major	True
+\.
+
+COPY orders (customer, value, date) FROM stdin;
+1	99.99	'2020-07-25'
+1	101.20	'2020-07-26'
+2	10.00	'2020-07-30'
+1	15.43	'2020-07-31'
+\.
+
+COPY deliveries ("order", delivery_date) FROM stdin;
+1	'2020-08-01'
+2	'2020-08-04'
+4	'2020-08-04'
+3	'2020-08-10'
+\.
