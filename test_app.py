@@ -14,7 +14,7 @@ class OrdersTestCase(unittest.TestCase):
         # Define test variables and initialise app
         self.app = create_app()
         self.client = self.app.test_client
-        self.database_path = os.environ['TEST_DATABASE_URL']
+        self.database_path = os.environ['DATABASE_URL']
 
         # TODO: Define TEST_DATABASE_URL environment variable
         
@@ -65,27 +65,27 @@ class OrdersTestCase(unittest.TestCase):
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
-        self.assertEqual(data['succes'], True)
+        self.assertEqual(data['success'], True)
 
     def test_create_order_error(self):
-        res = self.client().post('/orders', json={'customer': False})
+        res = self.client().post('/orders', json={'name': False})
         data = json.loads(res.data)
 
-        self.assertEqual(res.status_code, 422)
+        self.assertEqual(res.status_code, 400)
         self.assertEqual(data['success'], False)
 
     def test_create_customer_error(self):
-        res = self.client().post('/customers', json={'name': False})
+        res = self.client().post('/customers', json={'active': False})
         data = json.loads(res.data)
 
-        self.assertEqual(res.status_code, 422)
+        self.assertEqual(res.status_code, 400)
         self.assertEqual(data['success'], False)
 
     def test_create_delivery_error(self):
-        res = self.client().post('/deliveries', json={'order': 'wombat'})
+        res = self.client().post('/deliveries', json={'name': 'wombat'})
         data = json.loads(res.data)
 
-        self.assertEqual(res.status_code, 422)
+        self.assertEqual(res.status_code, 400)
         self.assertEqual(data['success'], False)
 
     # Test Get
@@ -134,7 +134,6 @@ class OrdersTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertTrue(data['customer']['id'])
         self.assertTrue(data['customer']['name'])
-        self.assertTrue(data['customer']['active'])
 
     def test_404_get_customer_by_nonexistant_id(self):
         res = self.client().get('/customers/1000000')
@@ -212,7 +211,7 @@ class OrdersTestCase(unittest.TestCase):
         self.assertTrue(data['customer'])
 
     def test_update_order(self):
-        res = self.client().patch('/orders/1', json={'value', 99.99})
+        res = self.client().patch('/orders/1', json={'value': 99.99})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -243,7 +242,7 @@ class OrdersTestCase(unittest.TestCase):
     # Test Delete
 
     def test_delete_order(self):
-        res = self.client().delete('/orders/1')
+        res = self.client().delete('/orders/3')
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -251,7 +250,7 @@ class OrdersTestCase(unittest.TestCase):
         self.assertTrue(data['deleted'])
 
     def test_delete_delivery(self):
-        res = self.client().delete('/deliveries/1')
+        res = self.client().delete('/deliveries/3')
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
