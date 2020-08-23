@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, abort, jsonify, json
+from flask import Flask, request, abort, redirect, jsonify, json
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from werkzeug.exceptions import HTTPException
@@ -10,6 +10,10 @@ from auth.auth import AuthError, requires_auth
 
 
 ITEMS_PER_PAGE = 10
+auth0_domain = os.environ['AUTH0_DOMAIN']
+client_id = os.environ['CLIENT_ID']
+application_url = os.environ['APP_URL']
+api_audience = os.environ['API_AUDIENCE']
 
 
 def paginate_results(request, selection):
@@ -36,6 +40,19 @@ def create_app(test_config=None):
         return jsonify({
             'success': True,
             'message': 'Documentation avaialble on GitHub at https://github.com/fogjama/FSND-capstone'
+        })
+
+    # Authorisation Endpoints
+
+    @app.route('/login', methods=['GET'])
+    def initiate_login():
+        return redirect(f'https://{auth0_domain}/authorize?response_type=token&client_id={client_id}&audience={api_audience}&redirect_uri={application_url}/login-result')
+
+    @app.route('/login-result', methods=['GET'])
+    def after_login():
+        return jsonify({
+            'success': True,
+            'message': 'Successful login. Get token from address bar.'
         })
 
     # POST endpoints
