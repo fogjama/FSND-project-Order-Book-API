@@ -318,9 +318,9 @@ def create_app(test_config=None):
             abort(404)
         
         selection = Delivery.query.filter_by(order=order_id).all()
-        deliveries = paginate_results(request, selection)
+        deliveries = [delivery.format() for delivery in selection]
 
-        total_deliveries = len(selection)
+        total_deliveries = len(deliveries)
 
         return jsonify({
             'success': True,
