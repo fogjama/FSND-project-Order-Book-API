@@ -132,10 +132,6 @@ def requires_auth(permission=''):
                 payload = verify_decode_jwt(token)
             except AuthError as e:
                 return e
-                # raise AuthError({
-                #     'code': 'unauthorized',
-                #     'description': 'Not authorized'
-                # }, 401)
 
             check_permissions(permission, payload)
             return f(payload, *args, **kwargs)
