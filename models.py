@@ -24,8 +24,9 @@ class Customer(db.Model):
     name = Column(String)
     active = Column(Boolean, default=True)
 
-    def __init__(self, name):
+    def __init__(self, name, active=True):
         self.name = name
+        self.active = active
 
     def format(self):
         return {
