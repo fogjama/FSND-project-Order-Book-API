@@ -1,5 +1,5 @@
 import os
-from flask import request, _request_ctx_stack
+from flask import request, _request_ctx_stack, json
 from functools import wraps
 from jose import jwt
 from urllib.request import urlopen
@@ -56,19 +56,19 @@ def check_permissions(permission, payload):
         raise AuthError({
             'code': 'missing_permission',
             'description': 'Malformed header - missing permissions'
-        }, 400)
+        }, 403)
 
     if permission not in payload['permissions']:
         raise AuthError({
             'code': 'missing_permission',
             'description': 'Missing permission ' + permission
-        }, 401)
+        }, 403)
 
     return True
 
 
 def verify_decode_jwt(token):
-    jsonurl = urlopen(f'https://{AUTH0_DOMAIN}/.well-known/jwks.json')
+    jsonurl = urlopen(f'https://{auth0_domain}/.well-known/jwks.json')
     jwks = json.loads(jsonurl.read())
     unverified_header = jwt.get_unverified_header(token)
     rsa_key = {}
@@ -92,9 +92,9 @@ def verify_decode_jwt(token):
             payload = jwt.decode(
                 token,
                 rsa_key,
-                algorithms=ALGORITHMS,
-                audience=API_AUDIENCE,
-                issuer='https://' + AUTH0_DOMAIN + '/'
+                algorithms=algorithms,
+                audience=api_audience,
+                issuer='https://' + auth0_domain + '/'
             )
 
             return payload
@@ -130,11 +130,12 @@ def requires_auth(permission=''):
             token = get_token_auth_header()
             try:
                 payload = verify_decode_jwt(token)
-            except BaseException:
-                raise AuthError({
-                    'code': 'unauthorized',
-                    'description': 'Not authorized'
-                }, 401)
+            except AuthError as e:
+                return e
+                # raise AuthError({
+                #     'code': 'unauthorized',
+                #     'description': 'Not authorized'
+                # }, 401)
 
             check_permissions(permission, payload)
             return f(payload, *args, **kwargs)
