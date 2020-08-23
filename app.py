@@ -159,7 +159,7 @@ def create_app(test_config=None):
 
         return jsonify({
             'success': True,
-            'customer': customer_db.format()
+            'id': customer_db.id
         })
 
 
@@ -184,7 +184,7 @@ def create_app(test_config=None):
 
         return jsonify({
             'success': True,
-            'order': order_db.format()
+            'order': order_db.id
         })
 
 
