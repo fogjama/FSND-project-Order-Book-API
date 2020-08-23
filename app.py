@@ -33,7 +33,7 @@ def create_app(test_config=None):
     # POST endpoints
     @app.route('/customers', methods=['POST'])
     @requires_auth('post:customers')
-    def create_customer():
+    def create_customer(jwt):
         customer = request.get_json()
 
         if 'name' not in customer:
@@ -62,7 +62,7 @@ def create_app(test_config=None):
 
     @app.route('/orders', methods=['POST'])
     @requires_auth('post:orders')
-    def create_order():
+    def create_order(jwt):
         order = request.get_json()
 
         for key in ['customer', 'value']:
@@ -92,7 +92,7 @@ def create_app(test_config=None):
 
     @app.route('/deliveries', methods=['POST'])
     @requires_auth('post:deliveries')
-    def create_delivery():
+    def create_delivery(jwt):
         delivery = request.get_json()
 
         for key in ['order', 'delivery_date']:
@@ -114,8 +114,8 @@ def create_app(test_config=None):
 
     # PATCH endpoints
     @app.route('/customers/<customer_id>', methods=['PATCH'])
-    @requires_auth('patch:customers')
-    def update_customer(customer_id):
+    @requires_auth('update:customers')
+    def update_customer(jwt, customer_id):
         customer = request.get_json()
 
         customer_db = Customer.query.filter(
@@ -139,8 +139,8 @@ def create_app(test_config=None):
 
 
     @app.route('/orders/<order_id>', methods=['PATCH'])
-    @requires_auth('patch:orders')
-    def update_order(order_id):
+    @requires_auth('update:orders')
+    def update_order(jwt, order_id):
         order = request.get_json()
 
         order_db = Order.query.filter(
@@ -168,7 +168,7 @@ def create_app(test_config=None):
     # DELETE endpoints
     @app.route('/orders/<order_id>', methods=['DELETE'])
     @requires_auth('delete:orders')
-    def delete_order(order_id):
+    def delete_order(jwt, order_id):
 
         try:
             order = Order.query.filter(Order.id == int(order_id)).one_or_none()
@@ -188,7 +188,7 @@ def create_app(test_config=None):
 
     @app.route('/deliveries/<delivery_id>', methods=['DELETE'])
     @requires_auth('delete:deliveries')
-    def delete_delivery(delivery_id):
+    def delete_delivery(jwt, delivery_id):
 
         try:
             delivery = Delivery.query.filter_by(
@@ -210,8 +210,8 @@ def create_app(test_config=None):
     # Customer cannot be DELETEd; PATCH 'active' to False
 
     @app.route('/orders', methods=['GET'])
-    @requires_auth('get:orders')
-    def get_order_list():
+    @requires_auth('read:orders')
+    def get_order_list(jwt):
         selection = Order.query.order_by(Order.id).all()
         orders = paginate_results(request, selection)
 
@@ -224,8 +224,8 @@ def create_app(test_config=None):
         })
 
     @app.route('/orders/<order_id>', methods=['GET'])
-    @requires_auth('get:orders')
-    def get_order(order_id):
+    @requires_auth('read:orders')
+    def get_order(jwt, order_id):
         order = Order.query.filter_by(id=order_id).one_or_none()
 
         if order is None:
@@ -237,8 +237,8 @@ def create_app(test_config=None):
         })
 
     @app.route('/customers', methods=['GET'])
-    @requires_auth('get:customers')
-    def get_customer_list():
+    @requires_auth('read:customers')
+    def get_customer_list(jwt):
         selection = Customer.query.order_by(Customer.name).all()
         customers = paginate_results(request, selection)
 
@@ -251,8 +251,8 @@ def create_app(test_config=None):
         })
 
     @app.route('/customers/<customer_id>', methods=['GET'])
-    @requires_auth('get:customers')
-    def get_customer(customer_id):
+    @requires_auth('read:customers')
+    def get_customer(jwt, customer_id):
         customer = Customer.query.filter_by(id=customer_id).one_or_none()
 
         if customer is None:
@@ -264,8 +264,8 @@ def create_app(test_config=None):
         })
 
     @app.route('/deliveries', methods=['GET'])
-    @requires_auth('get:deliveries')
-    def get_delivery_list():
+    @requires_auth('read:deliveries')
+    def get_delivery_list(jwt):
         selection = Delivery.query.order_by(Delivery.id).all()
         deliveries = paginate_results(request, selection)
 
@@ -278,8 +278,8 @@ def create_app(test_config=None):
         })
 
     @app.route('/deliveries/<delivery_id>', methods=['GET'])
-    @requires_auth('get:deliveries')
-    def get_delivery(delivery_id):
+    @requires_auth('read:deliveries')
+    def get_delivery(jwt, delivery_id):
         delivery = Delivery.query.filter_by(id=delivery_id).one_or_none()
 
         if delivery is None:
@@ -291,8 +291,8 @@ def create_app(test_config=None):
         })
 
     @app.route('/customers/<customer_id>/orders', methods=['GET'])
-    @requires_auth('get:orders')
-    def get_orders_by_customer(customer_id):
+    @requires_auth('read:orders')
+    def get_orders_by_customer(jwt, customer_id):
         customer = Customer.query.filter_by(id=customer_id).one_or_none()
 
         if customer is None:
@@ -310,8 +310,8 @@ def create_app(test_config=None):
         })
 
     @app.route('/orders/<order_id>/deliveries', methods=['GET'])
-    @requires_auth('get:deliveries')
-    def get_deliveries_by_order(order_id):
+    @requires_auth('read:deliveries')
+    def get_deliveries_by_order(jwt, order_id):
         order = Order.query.filter_by(id=order_id).one_or_none()
 
         if order is None:
@@ -379,7 +379,7 @@ def create_app(test_config=None):
             return jsonify({
                 'success': False,
                 'error': 401,
-                'message': 'Unauthorized: requires login'
+                'message': error.error['description']
             }), 401
         
         elif error.status_code == 403:
