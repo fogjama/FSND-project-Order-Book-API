@@ -31,6 +31,7 @@ class Customer(db.Model):
         return {
             'id': self.id,
             'name': self.name
+            'active': self.active
         }
 
     def insert(self):
