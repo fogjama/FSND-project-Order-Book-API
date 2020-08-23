@@ -30,6 +30,14 @@ def create_app(test_config=None):
 
     CORS(app)
 
+    # Default Endpoint
+    @app.route('/', methods=['GET'])
+    def direct_to_instructions():
+        return jsonify({
+            'success': True,
+            'message': 'Documentation avaialble on GitHub at https://github.com/fogjama/FSND-capstone'
+        })
+
     # POST endpoints
     @app.route('/customers', methods=['POST'])
     @requires_auth('post:customers')
