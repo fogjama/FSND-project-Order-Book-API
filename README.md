@@ -10,13 +10,15 @@ A virtual environment is recommended for running the application.
 
 Once you have your virtual environment set up and running, install dependencies from the `requirements.txt` file:
 
-```pip install -r requirements.txt
-
+```
+pip install -r requirements.txt
 ```
 
 This will install all of the required packages.
 
 #### Database Setup
+
+Create a local postgres database called *orders_application* 
 
 To create the database structure in your local postgres database, run the following commands:
 
@@ -26,18 +28,33 @@ python manage.py db migrate
 python manage.py db upgrade
 ```
 
+*NOTE: Modify the environment variable DATABASE_URL in the file **setup.sh** to reflect your local postgres database settings, before running `source setup.sh` to set environment variables for testing*
+
 #### Environment Variables
 
 The following environment variables must be set:
-* DATABASE_URL : full path to SQL database. Example: `postgres://{user}:{password}@{path}/{database_name}`
-* AUTH0_DOMAIN : domain for Auth0 account. Example: `{user}.eu.auth0.com`
-* API_AUDIENCE : value from Auth0 API definition
+- DATABASE_URL : full path to SQL database. Example: `postgres://{user}:{password}@{path}/{database_name}`
+- AUTH0_DOMAIN : domain for Auth0 account. Example: `{user}.eu.auth0.com`
+- API_AUDIENCE : value from Auth0 API definition
+- CLIENT_ID : Client ID of Auth0 application (used for login URL).
+- APP_URL : Local or public URL of running application (used for redirect after login). Example `http://localhost:8080/`
+
+For testing purposes using **test_app.py**:
+- ADMIN_TOKEN : valid token for Admin role
+- USER_TOKEN : valid token for User role
+
+To set these environment variables using default values saved in the **setup.sh** file, run `source setup.sh`
 
 ### Deploy to Heroku
 
-#### Install Dependencies
+#### Create and Set Up Heroku App
 
-#### Database Setup
+1. To create the Heroku app, run `heroku create {name_of_app}`.
+2. Using the git URL returned from step 1, run `git remote add heroku {heroku_git_url}`
+3. To set up postgresql add-on for the app database, run `heroku addons:create heroku-postgresql:hobby-dev --app {name_of_app}` (or subsitute `hobby-dev` if you are running on a paid tier)
+4. Log in to Heroku and set the environment variables AUTH0_DOMAIN and API_AUDIENCE (see above for definitions)
+5. Push files from local git repo by running `git push heroku master`
+6. Run database migrations by running `heroku run python manage.py db upgrade --app {name_of_app}`
 
 ## Authorization
 
@@ -60,10 +77,11 @@ Available user roles are:
 - Fetches a paginated list of orders with 10 items per page. 
 - Request arguments: Optional page argument of type integer (default to 1 if absent)
 - Returns list of dictionaries and total number of orders
+- Required access: `read:orders`
 
 Sample request:
 ```
-curl -X GET http://localhost:5000/orders?page=1 -H "Authorization: Bearer $TOKEN"
+curl -X GET https://fsnd-order-book-jaf9481.herokuapp.com/orders?page=1 -H "Authorization: Bearer $TOKEN"
 ```
 Sample response:
 ```
@@ -122,10 +140,11 @@ Sample response:
 - Fetches a paginated list of customers with 10 items per page
 - Request arguments: Optional page argument of type integer (default to 1 if absent)
 - Returns customers as list of dictionaries and total number of customers
+- Required access: `read:customers`
 
 Sample request:
 ```
-curl -X GET http://localhost:8080/customers?page=1 -H "Authorization: Bearer $TOKEN"
+curl -X GET https://fsnd-order-book-jaf9481.herokuapp.com/customers?page=1 -H "Authorization: Bearer $TOKEN"
 ```
 Sample response:
 ```
@@ -172,10 +191,11 @@ Sample response:
 - Fetches a paginated list of deliveries with 10 items per page
 - Request arguments: Optional page argument of type integer (defaults to 1 if omitted)
 - Returns deliveries as a list of dictionaries and total number of deliveries 
+- Required access: `read:deliveries`
 
 Sample request:
 ```
-curl -X GET http://localhost:8080/deliveries?page=1 -H "Authorization: Bearer $TOKEN"
+curl -X GET https://fsnd-order-book-jaf9481.herokuapp.com/deliveries?page=1 -H "Authorization: Bearer $TOKEN"
 ```
 Sample response:
 ```
@@ -221,10 +241,11 @@ Sample response:
 
 - Fetches a single customer by its id
 - Returns the selected customer as a dictionary object, or 404
+- Required access: `read:customers`
 
 Sample request:
 ```
-curl -X GET http://localhost:8080/customers/2 -H "Authorization: Bearer $TOKEN"
+curl -X GET https://fsnd-order-book-jaf9481.herokuapp.com/customers/2 -H "Authorization: Bearer $TOKEN"
 ```
 Sample response:
 ```
@@ -242,10 +263,11 @@ Sample response:
 
 - Fetches a single order by its id
 - Returns the selected order as a dictionary object, or 404
+- Required access: `read:orders`
 
 Sample request:
 ```
-curl -X GET http://localhost:8080/orders/5 -H "Authorization: Bearer $TOKEN"
+curl -X GET https://fsnd-order-book-jaf9481.herokuapp.com/orders/5 -H "Authorization: Bearer $TOKEN"
 ```
 Sample response:
 ```
@@ -263,10 +285,11 @@ Sample response:
 
 - Fetches a single delivery by its id
 - Returns the selected delivery as a dictionary object, or 404
+- Required access: `read:deliveries`
 
 Sample request:
 ```
-curl -X GET http://localhost:8080/deliveries/5 -H "Authorization: Bearer $TOKEN"
+curl -X GET https://fsnd-order-book-jaf9481.herokuapp.com/deliveries/5 -H "Authorization: Bearer $TOKEN"
 ```
 Sample response:
 ```
@@ -285,10 +308,11 @@ Sample response:
 - Fetches paginated list of orders linked to specific customer ID, with 10 items per page
 - Request arguments: Optional page argument as integer (defaults to 1 if omitted)
 - Returns list of dictionaries and total number of orders for customer
+- Required access: `read:orders`
 
 Sample request:
 ```
-curl -X GET http://localhost:8080/customers/1/orders?page=1 -H "Authorization: Bearer $TOKEN"
+curl -X GET https://fsnd-order-book-jaf9481.herokuapp.com/customers/1/orders?page=1 -H "Authorization: Bearer $TOKEN"
 ```
 Sample response:
 ```
@@ -346,10 +370,11 @@ Sample response:
 
 - Fetches list of all deliveries linked to specific order id
 - Returns deliveries as list of dictionaries and total number of deliveries
+- Required access: `read:deliveries`
 
 Sample request:
 ```
-curl -X http://localhost:8080/orders/1/deliveries -H "Authorization: Bearer $TOKEN"
+curl -X https://fsnd-order-book-jaf9481.herokuapp.com/orders/1/deliveries -H "Authorization: Bearer $TOKEN"
 ```
 Sample response:
 ```
@@ -383,14 +408,146 @@ Sample response:
 
 #### POST '/customers'
 
+- Creates a new customer
+- Returns the added customer with its ID
+- Required access: `post:customers`
+
+Sample request:
+```
+curl --request POST 'https://fsnd-order-book-jaf9481.herokuapp.com/customers' \
+--header 'Authorization: Bearer $TOKEN' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "name": "John Smith",
+    "active": true
+}'
+```
+Sample response:
+```
+{
+  "customer": {
+    "active": true,
+    "id": 10,
+    "name": "John Smith"
+  },
+  "success": true
+}
+```
+
 #### POST '/orders'
+
+- Creates a new order
+- Returns the created order with its ID
+- Requred access: `post:orders`
+
+Sample request:
+```
+curl --request POST 'https://fsnd-order-book-jaf9481.herokuapp.com/orders' \
+--header 'Authorization: Bearer $TOKEN' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "customer": 10,
+    "value": 99.98,
+    "date": "2020-08-19"
+}'
+```
+Sample response:
+```
+{
+  "order": {
+    "customer": 10,
+    "date": "Wed, 19 Aug 2020 00:00:00 GMT",
+    "id": 9,
+    "value": 99.98
+  },
+  "success": true
+}
+```
 
 #### POST '/deliveries'
 
+- Creates new delivery
+- Returns created delivery with its ID
+- Required access: `post:deliveries`
+
+Sample request:
+```
+curl --request POST 'https://fsnd-order-book-jaf9481.herokuapp.com/deliveries' \
+--header 'Authorization: Bearer $TOKEN' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "order": 9,
+    "delivery_date": "2020-08-23"
+}'
+```
+Sample response:
+```
+{
+  "delivery": {
+    "delivery_date": "Sun, 23 Aug 2020 00:00:00 GMT",
+    "id": 8,
+    "order": 9
+  },
+  "success": true
+}
+```
+
 #### PATCH '/customers/{customer_id}
+
+- Updates customer record by ID
+- Returns ID of updated record
+- Required access: `update:customers`
+
+Sample request:
+```
+
+```
+Sample response:
+```
+
+```
 
 #### PATCH '/orders/{order_id}
 
+- Updates order record by ID
+- Returns ID of updated record
+- Required access: `update:orders`
+
+Sample request:
+```
+
+```
+Sample response:
+```
+
+```
+
 #### DELETE '/orders/{order_id}
 
+- Deletes order record by ID
+- Returns ID of deleted record
+- Required access: `delete:orders`
+
+Sample request:
+```
+
+```
+Sample response:
+```
+
+```
+
 #### DELETE '/deliveries/{delivery_id}
+
+- Deletes delivery record by ID
+- Returns ID of deleted record
+- Required access: `delete:deliveries`
+
+Sample request:
+```
+
+```
+Sample response:
+```
+
+```
