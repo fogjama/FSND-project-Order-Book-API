@@ -68,9 +68,28 @@ Available user roles are:
 - Administrator: Administrators can create, read, update, and delete records
 - User: Users can read records but cannot create, update, or delete
 
+### Login / Acquiring a Token
+
+To acquire a JWT token, visit the endpoint `/login`. This redirects to the Auth0 login page for the application. After successful login, redirects back to the `/login-result` endpoint with instruction to copy the token from the address bar for use in API calls.
+
+Note that while a user can be registered using the `/login` endpoint, no resources can be accessed until the user is granted permissions in Auth0.
+
 ## API Documentation
 
 ### Endpoints
+
+#### GET '/'
+
+- Default application endpoint.
+- Returns success and URL to GitHub repo
+
+Response:
+```
+{
+  "message": "Documentation avaialble on GitHub at https://github.com/fogjama/FSND-capstone", 
+  "success": true
+}
+```
 
 #### GET '/orders?page={page}
 
@@ -500,11 +519,19 @@ Sample response:
 
 Sample request:
 ```
-
+curl --request PATCH 'https://fsnd-order-book-jaf9481.herokuapp.com/customers/10' \
+--header 'Authorization: Bearer $TOKEN' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "active": true
+}'
 ```
 Sample response:
 ```
-
+{
+  "id": 10,
+  "success": true
+}
 ```
 
 #### PATCH '/orders/{order_id}
@@ -515,11 +542,19 @@ Sample response:
 
 Sample request:
 ```
-
+curl --request PATCH 'https://fsnd-order-book-jaf9481.herokuapp.com/orders/5' \
+--header 'Authorization: Bearer $TOKEN' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "value": 105.20
+}'
 ```
 Sample response:
 ```
-
+{
+    "id": 5,
+    "success": true
+}
 ```
 
 #### DELETE '/orders/{order_id}
@@ -530,11 +565,15 @@ Sample response:
 
 Sample request:
 ```
-
+curl --request DELETE 'https://fsnd-order-book-jaf9481.herokuapp.com/orders/5' \
+--header 'Authorization: Bearer $TOKEN'
 ```
 Sample response:
 ```
-
+{
+    "deleted": "5",
+    "success": true
+}
 ```
 
 #### DELETE '/deliveries/{delivery_id}
@@ -545,9 +584,13 @@ Sample response:
 
 Sample request:
 ```
-
+curl --request DELETE 'https://fsnd-order-book-jaf9481.herokuapp.com/deliveries/9' \
+--header 'Authorization: Bearer $TOKEN'
 ```
 Sample response:
 ```
-
+{
+    "deleted": "9",
+    "success": true
+}
 ```
