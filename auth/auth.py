@@ -5,9 +5,9 @@ from jose import jwt
 from urllib.request import urlopen
 
 
-auth0_domain = os.environ['AUTH0_DOMAIN']
-api_audience = os.environ['API_AUDIENCE']
-algorithms = ['RS256']
+AUTH0_DOMAIN = os.environ['AUTH0_DOMAIN']
+API_AUDIENCE = os.environ['API_AUDIENCE']
+ALGORITHMS = ['RS256']
 
 
 # Autherror exception
@@ -68,7 +68,7 @@ def check_permissions(permission, payload):
 
 
 def verify_decode_jwt(token):
-    jsonurl = urlopen(f'https://{auth0_domain}/.well-known/jwks.json')
+    jsonurl = urlopen(f'https://{AUTH0_DOMAIN}/.well-known/jwks.json')
     jwks = json.loads(jsonurl.read())
     unverified_header = jwt.get_unverified_header(token)
     rsa_key = {}
@@ -92,9 +92,9 @@ def verify_decode_jwt(token):
             payload = jwt.decode(
                 token,
                 rsa_key,
-                algorithms=algorithms,
-                audience=api_audience,
-                issuer='https://' + auth0_domain + '/'
+                algorithms=ALGORITHMS,
+                audience=API_AUDIENCE,
+                issuer='https://' + AUTH0_DOMAIN + '/'
             )
 
             return payload
@@ -108,15 +108,14 @@ def verify_decode_jwt(token):
         except jwt.JWTClaimsError:
             raise AuthError({
                 'code': 'invalid_claims',
-                'description': 'Incorrect claims. \
-                    Please, check the audience and issuer.'
+                'description': 'Incorrect claims. Please, check the audience and issuer.'
             }, 401)
         except Exception:
             raise AuthError({
                 'code': 'invalid_header',
                 'description': 'Unable to parse authentication token.'
             }, 400)
-
+            
     raise AuthError({
         'code': 'invalid_header',
                 'description': 'Unable to find the appropriate key.'
