@@ -99,6 +99,10 @@ To acquire a JWT token, visit the endpoint `/login`. This redirects to the Auth0
 
 Note that while a user can be registered with the application using the `/login` endpoint, no resources can be accessed until the user is granted permissions in Auth0.
 
+*NB: The following users can be used to generate jwt tokens for test purposes:
+- Admin --> fsnd-admin@fogjama.com / FSND-admin-login
+- User --> fsnd-admin@fogjama.com / FSND-user-login
+
 ## API Documentation
 
 ### Deployed Location
