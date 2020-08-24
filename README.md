@@ -1,5 +1,30 @@
 # Full Stack Capstone Project
 
+## Overview
+
+This project is completed in the context of the Full Stack Web Development Nanodegree programme from Udacity.
+
+The application is developed as a proof-of-concept lightweight order database.
+
+Real-world use would be to provide a database of sales data managed by APIs.
+
+## Data Model
+
+The data model is kept minimal in order to focus on the structure of the build.
+
+Objects:
+
+- **Customer** object has attributes `id` (int, primary key), `name` (str), and `active` (bool)
+
+- **Order** object has attributes `id` (int, primary key), `customer` (int), `value` (float), and `date` (datetime)
+
+- **Delivery** object has attributes `id` (int, primary key), `order` (int), and `delivery_date` (datetime)
+
+One customer can have multiple orders.
+One order can have multiple delivery events.
+
+Foreign key constraints are not implemented in order to keep the model simple as a POC.
+
 ## Getting Started
 
 ### Run Locally
@@ -39,11 +64,11 @@ The following environment variables must be set:
 - CLIENT_ID : Client ID of Auth0 application (used for login URL).
 - APP_URL : Local or public URL of running application (used for redirect after login). Example `http://localhost:8080/`
 
-For testing purposes using **test_app.py**:
+To set these environment variables using default values saved in the **setup.sh** file, run `source setup.sh`
+
+For testing purposes using **test_app.py**, manually set the following additional environment variables:
 - ADMIN_TOKEN : valid token for Admin role
 - USER_TOKEN : valid token for User role
-
-To set these environment variables using default values saved in the **setup.sh** file, run `source setup.sh`
 
 ### Deploy to Heroku
 
@@ -72,9 +97,13 @@ Available user roles are:
 
 To acquire a JWT token, visit the endpoint `/login`. This redirects to the Auth0 login page for the application. After successful login, redirects back to the `/login-result` endpoint with instruction to copy the token from the address bar for use in API calls.
 
-Note that while a user can be registered using the `/login` endpoint, no resources can be accessed until the user is granted permissions in Auth0.
+Note that while a user can be registered with the application using the `/login` endpoint, no resources can be accessed until the user is granted permissions in Auth0.
 
 ## API Documentation
+
+### Deployed Location
+
+Sample application is currently available at `https://fsnd-order-book-jaf9481.herokuapp.com`
 
 ### Endpoints
 
