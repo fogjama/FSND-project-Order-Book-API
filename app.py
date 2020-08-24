@@ -39,14 +39,18 @@ def create_app(test_config=None):
     def direct_to_instructions():
         return jsonify({
             'success': True,
-            'message': 'Documentation avaialble on GitHub at https://github.com/fogjama/FSND-capstone'
+            'message': 'Documentation avaialble on \
+                GitHub at https://github.com/fogjama/FSND-capstone'
         })
 
     # Authorisation Endpoints
 
     @app.route('/login', methods=['GET'])
     def initiate_login():
-        return redirect(f'https://{auth0_domain}/authorize?response_type=token&client_id={client_id}&audience={api_audience}&redirect_uri={application_url}/login-result')
+        return redirect(
+            f'https://{auth0_domain}/authorize?response_type=token' + 
+            f'&client_id={client_id}&audience={api_audience}&' + 
+            f'redirect_uri={application_url}/login-result')
 
     @app.route('/login-result', methods=['GET'])
     def after_login():
@@ -114,7 +118,6 @@ def create_app(test_config=None):
             'order': new_order.format()
         })
 
-
     @app.route('/deliveries', methods=['POST'])
     @requires_auth('post:deliveries')
     def create_delivery(jwt):
@@ -136,8 +139,8 @@ def create_app(test_config=None):
             'delivery': new_delivery.format()
         })
 
-
     # PATCH endpoints
+
     @app.route('/customers/<customer_id>', methods=['PATCH'])
     @requires_auth('update:customers')
     def update_customer(jwt, customer_id):
@@ -161,7 +164,6 @@ def create_app(test_config=None):
             'success': True,
             'id': customer_db.id
         })
-
 
     @app.route('/orders/<order_id>', methods=['PATCH'])
     @requires_auth('update:orders')
@@ -187,10 +189,10 @@ def create_app(test_config=None):
             'order': order_db.id
         })
 
-
     # Delivery cannot be PATCHed
 
     # DELETE endpoints
+
     @app.route('/orders/<order_id>', methods=['DELETE'])
     @requires_auth('delete:orders')
     def delete_order(jwt, order_id):
@@ -228,7 +230,7 @@ def create_app(test_config=None):
                 'success': True,
                 'deleted': delivery_id
             })
-        
+
         except BaseException as e:
             abort(404)
 
@@ -341,7 +343,7 @@ def create_app(test_config=None):
 
         if order is None:
             abort(404)
-        
+
         selection = Delivery.query.filter_by(order=order_id).all()
         deliveries = [delivery.format() for delivery in selection]
 
@@ -397,7 +399,7 @@ def create_app(test_config=None):
         })
         response.content_type = 'application/json'
         return response
-    
+
     @app.errorhandler(AuthError)
     def auth_error(error):
         if error.status_code == 401:
@@ -406,14 +408,14 @@ def create_app(test_config=None):
                 'error': 401,
                 'message': error.error['description']
             }), 401
-        
+
         elif error.status_code == 403:
             return jsonify({
                 'success': False,
                 'error': 403,
                 'message': 'Forbidden: Missing authorization'
             }), 403
-        
+
         else:
             return jsonify({
                 'success': False,
