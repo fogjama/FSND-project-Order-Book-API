@@ -39,8 +39,8 @@ def create_app(test_config=None):
     def direct_to_instructions():
         return jsonify({
             'success': True,
-            'message': 'Documentation avaialble on \
-                GitHub at https://github.com/fogjama/FSND-capstone'
+            'message': 'Documentation avaialble on '+
+                'GitHub at https://github.com/fogjama/FSND-capstone'
         })
 
     # Authorisation Endpoints
